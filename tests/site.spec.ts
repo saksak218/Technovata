@@ -62,13 +62,13 @@ test("mobile navigation supports Escape, focus return, and route changes", async
   await expect(page.getByRole("dialog")).toBeHidden();
 });
 
-test("theme selection persists through navigation and refresh", async ({
+test("dark is the default and light selection persists through navigation and refresh", async ({
   page,
 }) => {
   await page.goto("/");
-  await expect(page.locator("html")).toHaveClass(/light/);
-  await page.getByRole("button", { name: "Switch color theme" }).click();
   await expect(page.locator("html")).toHaveClass(/dark/);
+  await page.getByRole("button", { name: "Switch color theme" }).click();
+  await expect(page.locator("html")).toHaveClass(/light/);
   await page
     .getByRole("navigation", { name: "Main navigation" })
     .getByRole("button", { name: "Services", exact: true })
@@ -79,7 +79,7 @@ test("theme selection persists through navigation and refresh", async ({
     .click();
   await expect(page).toHaveURL(/\/services$/);
   await page.reload();
-  await expect(page.locator("html")).toHaveClass(/dark/);
+  await expect(page.locator("html")).toHaveClass(/light/);
 });
 
 test("the services dropdown opens by keyboard and Escape returns focus", async ({

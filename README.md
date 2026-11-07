@@ -18,8 +18,8 @@ remaining scope in [PLAN.md](PLAN.md).
 
 - The landing page follows the supplied Technovata inspiration and design system:
   midnight navy, electric mint, soft violet highlights, and dimensional artwork.
-- Light and dark themes share the same structure and respect the system theme
-  until you choose a theme using the header control.
+- Light and dark themes share the same structure. Dark is the default; the header
+  control lets you switch themes and remembers your choice.
 - The hero uses the supplied emblem artwork and muted, pausable video in both
   themes. Playback pauses offscreen and in hidden tabs. Phones start with static
   artwork and offer playback opt-in. Reduced motion avoids the animation download.
@@ -45,7 +45,7 @@ illustrations use CSS depth; the landing page and About page also use real-time 
   navigation menu, mobile sheet, form fields, inputs, textarea, labels, separators.
 - **Motion**: animation tools with user reduced-motion preferences configured.
 - **Magic UI**: `BorderBeam` and `GridPattern`, installed as editable source.
-- **next-themes**: system-aware light/dark mode using shadcn's class-based theme.
+- **next-themes**: dark by default with saved light/dark choices using shadcn's class-based theme.
 - **Tailwind CSS 4 and Geist**: existing styling and optimized fonts retained.
 
 Components live in `components/ui/`; theme and motion defaults are in

@@ -58,7 +58,8 @@ can coexist. Both effects ignore pointer input. Reinstalling these files can
 overwrite the local theme and accessibility adjustments.
 
 `components/providers.tsx` configures `MotionConfig reducedMotion="user"` and
-`ThemeProvider attribute="class" defaultTheme="system"`. The root layout stays
+`ThemeProvider attribute="class" defaultTheme="dark"`. Saved theme choices take
+precedence over the dark default. The root layout stays
 a Server Component and passes server-rendered children through those providers.
 The hydration exception is scoped to the HTML element whose theme class changes.
 Global CSS shortens CSS animations and transitions under reduced motion; custom
