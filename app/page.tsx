@@ -1,69 +1,136 @@
-import Image from "next/image";
+import Link from "next/link";
+import {
+  ArrowDown,
+  ArrowRight,
+  ArrowUpRight,
+  Braces,
+  Check,
+  Sparkles,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { HeroVisual } from "@/components/site/hero-visual";
+import {
+  FaqSection,
+  ProcessSection,
+  ProjectCta,
+  ServicesSection,
+} from "@/components/site/sections";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <>
+      <section className="hero-section" aria-labelledby="hero-heading">
+        <div className="hero-grid-background" aria-hidden="true" />
+        <div className="site-container hero-grid">
+          <div className="hero-copy">
+            <div className="hero-eyebrow">
+              <span className="status-dot" />
+              YOUR IDEAS. OUR NEXT CHALLENGE.
+            </div>
+            <h1 id="hero-heading">
+              Software built
+              <br />
+              for <span>what&apos;s next.</span>
+            </h1>
+            <p>
+              Websites, web apps, and mobile experiences.
+              <br className="desktop-break" /> Thoughtfully designed. Built
+              around you.
+            </p>
+            <div className="hero-buttons">
+              <Button
+                size="lg"
+                nativeButton={false}
+                role="link"
+                render={<Link href="/contact" />}
+              >
+                Start a project <ArrowUpRight aria-hidden="true" />
+              </Button>
+              <Button
+                variant="outline"
+                size="lg"
+                nativeButton={false}
+                role="link"
+                render={<Link href="#services" />}
+              >
+                <span className="button-play">
+                  <ArrowDown aria-hidden="true" />
+                </span>
+                Explore our services
+              </Button>
+            </div>
+            <div className="hero-footnote">
+              <span>
+                <Check aria-hidden="true" /> Ideas into experiences
+              </span>
+              <i />
+              <span>
+                <Check aria-hidden="true" /> Built with purpose
+              </span>
+            </div>
+          </div>
+          <HeroVisual />
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <div className="site-container hero-bottom">
+          <span>
+            <span className="small-cross">+</span> GOOD SOFTWARE STARTS WITH A
+            GOOD CONVERSATION.
+          </span>
+          <Link href="#services" aria-label="Scroll to our services">
+            <span>SCROLL TO EXPLORE</span>
+            <ArrowDown aria-hidden="true" />
+          </Link>
         </div>
-      </main>
-    </div>
+      </section>
+      <ServicesSection />
+      <ProcessSection />
+      <section
+        className="about-section section-pad"
+        aria-labelledby="about-heading"
+      >
+        <div className="site-container about-grid">
+          <div className="about-art" aria-hidden="true">
+            <div className="about-orbit orbit-a" />
+            <div className="about-orbit orbit-b" />
+            <div className="about-core">
+              <Braces strokeWidth={1} />
+              <span>IDEA → IMPACT</span>
+            </div>
+            <div className="floating-label label-design">
+              <Sparkles />
+              Designed with intention
+            </div>
+            <div className="floating-label label-code">
+              <Braces />
+              Built with care
+            </div>
+          </div>
+          <div className="about-copy">
+            <span className="eyebrow">
+              <span />
+              THE THINKING BEHIND THE BUILD
+            </span>
+            <h2 id="about-heading">
+              Technology is the tool.
+              <br />
+              <span className="text-accent">People are the point.</span>
+            </h2>
+            <p>
+              We believe the best digital experiences make something easier,
+              clearer, or more possible for the people using them.
+            </p>
+            <p>
+              That&apos;s the thinking behind Technovata. Thoughtful design
+              meets considered engineering, with your goals at the center.
+            </p>
+            <Link className="text-link" href="/about">
+              A little more about us <ArrowRight aria-hidden="true" />
+            </Link>
+          </div>
+        </div>
+      </section>
+      <FaqSection />
+      <ProjectCta />
+    </>
   );
 }

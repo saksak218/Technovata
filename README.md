@@ -1,36 +1,86 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Technovata
 
-## Getting Started
+Software development company website built with Next.js App Router, React,
+TypeScript, and Tailwind CSS 4. Use npm and the committed `package-lock.json`.
 
-First, run the development server:
+## Development
 
 ```bash
+npm ci
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [localhost:3000](http://localhost:3000). The website includes Home,
+Services, About, Contact, and a branded 404 page. Track completed work and
+remaining scope in [PLAN.md](PLAN.md).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Website preview
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- The landing page follows the supplied Technovata inspiration and design system:
+  midnight navy, electric mint, soft violet highlights, and dimensional artwork.
+- Light and dark themes share the same structure and respect the system theme
+  until you choose a theme using the header control.
+- The hero uses the supplied emblem artwork and rendered animation. In dark
+  mode, desktop playback is muted and pausable; it pauses offscreen and in
+  hidden tabs. Phones start with static artwork. Reduced motion and light mode
+  keep the original transparent image without downloading the animation.
+- The inquiry form validates four required fields and displays **Demo complete.
+  Nothing was sent.** It does not send or persist form data. Use sample details
+  when reviewing it. The form stays disabled when JavaScript is unavailable.
+- Company information is sample content. The preview has `noindex` metadata and
+  no portfolio, testimonials, database, CMS, email delivery, or account system.
 
-## Learn More
+The original files in `design/` remain unchanged. Public brand images are copies;
+the public animation is a smaller, audio-free MP4. Service devices and process
+illustrations use CSS depth. There is no real-time WebGL renderer in this UI.
 
-To learn more about Next.js, take a look at the following resources:
+## UI foundation
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **shadcn/ui, Base UI, and Lucide**: buttons, cards, badges, FAQ accordion,
+  navigation menu, mobile sheet, form fields, inputs, textarea, labels, separators.
+- **Motion**: animation tools with user reduced-motion preferences configured.
+- **Magic UI**: `BorderBeam` and `GridPattern`, installed as editable source.
+- **next-themes**: system-aware light/dark mode using shadcn's class-based theme.
+- **Tailwind CSS 4 and Geist**: existing styling and optimized fonts retained.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Components live in `components/ui/`; theme and motion defaults are in
+`components/providers.tsx`; design tokens are in `app/globals.css`.
 
-## Deploy on Vercel
+See [the research and usage notes](docs/ui-foundation.md) for the selection
+rationale, sources, examples, and company website recommendations.
+Copied component licenses are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Checks
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm run lint
+npm run typecheck
+npm run build
+npm audit
+```
+
+For browser tests, install the Playwright browsers once, then build into a
+separate directory so the development server can keep running:
+
+```bash
+npx playwright install chromium firefox webkit
+TECHNOVATA_BUILD_DIR=.next-production npm run build
+npm run test:e2e
+```
+
+The test runner starts and stops a local production server on port 3100. Linux
+hosts may also need the system libraries documented by Playwright. Browser
+emulation does not replace checks on physical phones. See
+[the UI validation report](docs/ui-preview-validation.md) for recorded results
+and limitations.
+
+## Add components
+
+```bash
+npx shadcn add dialog
+npx shadcn add @magicui/blur-fade
+```
+
+Review generated source before using it. This project uses **Base UI** composition
+(`render`); Radix examples using `asChild` need adapting. Reinstalling Magic UI
+files can overwrite the local theme and accessibility adjustments.
