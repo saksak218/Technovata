@@ -1,3 +1,4 @@
+import { Cloud, Layers3 } from "lucide-react";
 import type { ServiceId } from "@/lib/site-content";
 
 export function ServiceVisual({ kind }: { kind: ServiceId }) {
@@ -102,6 +103,24 @@ export function ServiceVisual({ kind }: { kind: ServiceId }) {
             <div className="phone-home" />
           </div>
         </>
+      )}
+      {kind === "saas" && (
+        <div className="saas-device">
+          <div className="saas-layer saas-layer-bottom" />
+          <div className="saas-layer saas-layer-middle">
+            <Layers3 />
+          </div>
+          <div className="saas-layer saas-layer-top">
+            <Cloud />
+            <span>YOUR NEXT BIG THING</span>
+            <div className="saas-status">
+              <i />
+              Connected possibilities
+            </div>
+          </div>
+          <div className="saas-node saas-node-one" />
+          <div className="saas-node saas-node-two" />
+        </div>
       )}
     </div>
   );

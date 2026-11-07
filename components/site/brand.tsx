@@ -6,14 +6,25 @@ export function Brand() {
     <Link href="/" className="brand" aria-label="Technovata home">
       <span className="brand-symbol" aria-hidden="true">
         <Image
-          src="/brand/logo.png"
+          src="/brand/logo-mark-transparent.png"
           alt=""
-          width={80}
-          height={80}
-          className="brand-symbol-image"
+          width={64}
+          height={64}
+          sizes="56px"
+          className="brand-symbol-image brand-logo-light"
+        />
+        <Image
+          src="/brand/logo-mark-dark.png"
+          alt=""
+          width={64}
+          height={64}
+          sizes="56px"
+          className="brand-symbol-image brand-logo-dark"
         />
       </span>
-      <span>Technovata</span>
+      <span className="brand-wordmark">
+        Technovata<span className="brand-period">.</span>
+      </span>
     </Link>
   );
 }

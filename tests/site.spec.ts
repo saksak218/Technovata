@@ -6,15 +6,15 @@ test("all pages fit phone, tablet, and desktop in both themes", async ({
   test.setTimeout(90000);
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
+  await page.goto("/contact");
   for (const theme of ["light", "dark"]) {
-    await page.addInitScript(
-      (value) => localStorage.setItem("theme", value),
-      theme,
-    );
+    await page.evaluate((value) => localStorage.setItem("theme", value), theme);
     for (const width of [375, 768, 1024, 1440]) {
       await page.setViewportSize({ width, height: 900 });
-      for (const path of ["/", "/services", "/about", "/contact"]) {
+      for (const path of ["/", "/services", "/process", "/about", "/contact"]) {
         await page.goto(path);
+        // Let static-page prefetches finish before the next full document navigation.
+        await page.waitForLoadState("networkidle");
         await expect(page.locator("html")).toHaveClass(new RegExp(theme));
         await expect(page.locator("main h1")).toBeVisible();
         await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
@@ -53,6 +53,13 @@ test("mobile navigation supports Escape, focus return, and route changes", async
   await expect(page.getByRole("dialog")).toBeHidden();
   await page.goBack();
   await expect(page).toHaveURL(/\/$/);
+  await trigger.click();
+  await page
+    .getByRole("navigation", { name: "Mobile navigation" })
+    .getByRole("link", { name: "Our process", exact: true })
+    .click();
+  await expect(page).toHaveURL(/\/process$/);
+  await expect(page.getByRole("dialog")).toBeHidden();
 });
 
 test("theme selection persists through navigation and refresh", async ({
@@ -64,10 +71,39 @@ test("theme selection persists through navigation and refresh", async ({
   await expect(page.locator("html")).toHaveClass(/dark/);
   await page
     .getByRole("navigation", { name: "Main navigation" })
-    .getByRole("link", { name: "Services", exact: true })
+    .getByRole("button", { name: "Services", exact: true })
     .click();
+  await page
+    .locator(".header-services-content")
+    .getByRole("link", { name: "Explore all services", exact: true })
+    .click();
+  await expect(page).toHaveURL(/\/services$/);
   await page.reload();
   await expect(page.locator("html")).toHaveClass(/dark/);
+});
+
+test("the services dropdown opens by keyboard and Escape returns focus", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const trigger = page
+    .getByRole("navigation", { name: "Main navigation" })
+    .getByRole("button", { name: "Services", exact: true });
+  await trigger.focus();
+  await page.keyboard.press("Enter");
+  await expect(trigger).toHaveAttribute("aria-expanded", "true");
+  const overview = page
+    .locator(".header-services-content")
+    .getByRole("link", { name: "Explore all services", exact: true });
+  await expect(overview).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(trigger).toHaveAttribute("aria-expanded", "false");
+  await expect(trigger).toBeFocused();
+  await page.keyboard.press("Space");
+  await expect(overview).toBeVisible();
+  await overview.click();
+  await expect(page).toHaveURL(/\/services$/);
+  await expect(trigger).toHaveAttribute("aria-expanded", "false");
 });
 
 test("inquiry validates, preserves ordinary typing, and sends no data", async ({
@@ -137,16 +173,25 @@ test("without JavaScript the demo form cannot collect or submit values", async (
 test("reduced motion keeps the emblem static and avoids the video download", async ({
   page,
 }) => {
-  await page.addInitScript(() => localStorage.setItem("theme", "dark"));
   await page.emulateMedia({ reducedMotion: "reduce" });
   const mediaRequests: string[] = [];
   page.on("request", (request) => {
     if (request.url().endsWith(".mp4")) mediaRequests.push(request.url());
   });
-  await page.goto("/");
-  await expect(page.locator(".emblem-still")).toHaveCSS("opacity", "1");
-  await expect(page.locator(".animation-toggle")).toBeHidden();
-  await expect(page.locator("video")).not.toHaveAttribute("src");
+  await page.goto("/contact");
+  for (const theme of ["light", "dark"]) {
+    await page.evaluate((value) => localStorage.setItem("theme", value), theme);
+    await page.goto("/");
+    await expect(page.locator("html")).toHaveClass(new RegExp(theme));
+    await expect(page.locator(".emblem-still")).toHaveCSS("opacity", "1");
+    await expect(page.locator(".animation-toggle")).toBeHidden();
+    await expect(page.locator("video")).not.toHaveAttribute("src");
+    const scene = page.locator(".orbital-scene").first();
+    await scene.scrollIntoViewIfNeeded();
+    await expect(scene).toHaveAttribute("data-scene-state", "static");
+    await expect(scene.locator(".orbital-fallback")).toBeVisible();
+    await expect(page.locator("canvas")).toHaveCount(0);
+  }
   expect(mediaRequests).toEqual([]);
 });
 
@@ -154,20 +199,40 @@ test("the phone hero stays static until animation is explicitly requested", asyn
   page,
 }) => {
   await page.setViewportSize({ width: 375, height: 812 });
-  await page.addInitScript(() => localStorage.setItem("theme", "dark"));
-  await page.goto("/");
-  await expect(page.locator("html")).toHaveClass(/dark/);
-  await expect(page.locator("video")).not.toHaveAttribute("src");
-  await expect(page.locator(".emblem-still")).toHaveCSS("opacity", "1");
+  await page.goto("/contact");
+  for (const theme of ["light", "dark"]) {
+    await page.evaluate((value) => localStorage.setItem("theme", value), theme);
+    await page.goto("/");
+    await expect(page.locator("html")).toHaveClass(new RegExp(theme));
+    await expect(page.locator("video")).not.toHaveAttribute("src");
+    await expect(page.locator(".emblem-still")).toHaveCSS("opacity", "1");
+    await page.getByRole("button", { name: "Play emblem animation" }).click();
+    await expect(page.locator("video")).toHaveAttribute(
+      "src",
+      theme === "light"
+        ? "/brand/emblem-motion-light.mp4"
+        : "/brand/emblem-motion.mp4",
+    );
+  }
 });
 
-test("the light theme uses the original transparent emblem without a video download", async ({
+test("the desktop hero loads the emblem animation in both themes", async ({
   page,
 }) => {
-  await page.goto("/");
-  await expect(page.locator("html")).toHaveClass(/light/);
-  await expect(page.locator("video")).not.toHaveAttribute("src");
-  await expect(page.locator(".animation-toggle")).toBeHidden();
+  await page.goto("/contact");
+  for (const theme of ["light", "dark"]) {
+    await page.evaluate((value) => localStorage.setItem("theme", value), theme);
+    await page.goto("/");
+    await expect(page.locator("html")).toHaveClass(new RegExp(theme));
+    await expect(page.locator("video")).toHaveAttribute(
+      "src",
+      theme === "light"
+        ? "/brand/emblem-motion-light.mp4"
+        : "/brand/emblem-motion.mp4",
+    );
+    await expect(page.locator(".animation-toggle")).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+  }
 });
 
 test("failed emblem playback leaves the static artwork usable", async ({
@@ -200,4 +265,81 @@ test("FAQ interaction and the branded missing page work", async ({ page }) => {
   const response = await page.goto("/not-a-page");
   expect(response?.status()).toBe(404);
   await expect(page.getByRole("link", { name: "Back to home" })).toBeVisible();
+});
+
+test("each service has a direct page and SaaS is available in the inquiry", async ({
+  page,
+}) => {
+  for (const [slug, name] of [
+    ["websites", "Websites"],
+    ["web-apps", "Web applications"],
+    ["mobile-apps", "Mobile applications"],
+    ["saas", "SaaS development"],
+  ]) {
+    await page.goto(`/services/${slug}`);
+    await expect(page.getByRole("heading", { level: 1 })).toContainText(name);
+    await expect(
+      page.getByRole("link", { name: "Start a project" }).first(),
+    ).toHaveAttribute("href", "/contact");
+  }
+  const missingService = await page.goto("/services/not-a-service");
+  expect(missingService?.status()).toBe(404);
+  await expect(page.getByRole("link", { name: "Back to home" })).toBeVisible();
+  await page.goto("/services");
+  await expect(
+    page.getByRole("heading", { name: "SaaS development", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.locator('main a[href="/services/saas"]').first(),
+  ).toBeVisible();
+  await page.goto("/contact");
+  await page.getByLabel("What can we help with?").selectOption("saas");
+  await expect(page.getByLabel("What can we help with?")).toHaveValue("saas");
+});
+
+test("testimonial previews disclose fictional quotes and people", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const testimonials = page.locator("#testimonials");
+  await expect(
+    testimonials.getByRole("heading", {
+      name: "Good partnerships. Great possibilities.",
+    }),
+  ).toBeVisible();
+  await expect(
+    testimonials.getByText(
+      "Illustrative quotes and fictional people for this design preview. These are not client endorsements.",
+    ),
+  ).toBeVisible();
+  await expect(
+    testimonials.getByText("Sample quote", { exact: true }),
+  ).toHaveCount(3);
+  await expect(testimonials.getByText(/Fictional /)).toHaveCount(3);
+});
+
+test("unsupported WebGL keeps the 3D artwork and page content usable", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    const getContext = HTMLCanvasElement.prototype.getContext;
+    HTMLCanvasElement.prototype.getContext = function (
+      this: HTMLCanvasElement,
+      contextType: string,
+      ...args: unknown[]
+    ) {
+      if (contextType === "webgl" || contextType === "webgl2") return null;
+      return Reflect.apply(getContext, this, [contextType, ...args]);
+    } as typeof getContext;
+  });
+  await page.goto("/");
+  const scene = page.locator(".orbital-scene").first();
+  await scene.scrollIntoViewIfNeeded();
+  await expect(scene).toHaveAttribute("data-scene-state", "fallback");
+  await expect(scene.locator(".orbital-fallback")).toBeVisible();
+  await expect(scene.locator("canvas")).toHaveCount(0);
+  await expect(page.locator("#services-heading")).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: "Start a project" }).first(),
+  ).toHaveAttribute("href", "/contact");
 });

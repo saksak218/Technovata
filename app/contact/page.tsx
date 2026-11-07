@@ -22,8 +22,8 @@ export default function ContactPage() {
           <span className="text-accent">starts here.</span>
         </h1>
         <p>
-          A website that feels like you. An app that solves a real problem. Tell
-          us what you have in mind.
+          A website that feels like you. An app that solves a real problem. A
+          SaaS product with possibility. Tell us what you have in mind.
         </p>
         <div className="contact-steps">
           <div>

@@ -1,0 +1,366 @@
+/* The supplied cinematic media belongs on its own dark art stage in either theme. */
+.hero-visual {
+  --stage-ink: #e8f9f5;
+  --stage-muted: #a3bdc4;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  aspect-ratio: 1.06;
+  margin: 12px 0 12px 24px;
+  border: 1px solid #b8fff02b;
+  border-radius: 32px;
+  color: var(--stage-ink);
+  background:
+    radial-gradient(ellipse at 50% 46%, #0c51462b, transparent 65%),
+    linear-gradient(145deg, #102330, #060e16 65%, #0c1c26);
+  box-shadow:
+    0 32px 65px -30px #173d4360,
+    inset 0 1px #ffffff10;
+}
+.dark .hero-visual {
+  box-shadow:
+    0 32px 80px -35px #000b,
+    inset 0 1px #ffffff0e;
+  border-color: #2ce7bc24;
+}
+.hero-visual::before {
+  position: absolute;
+  content: "";
+  inset: 0;
+  z-index: -1;
+  background-image:
+    linear-gradient(#b0ffeb06 1px, transparent 1px),
+    linear-gradient(90deg, #b0ffeb06 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: radial-gradient(ellipse, #000, transparent 78%);
+}
+.hero-stage-heading {
+  position: absolute;
+  z-index: 3;
+  inset: 24px 24px auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  color: var(--stage-muted);
+  font-family: var(--font-geist-mono);
+  font-size: 10px;
+  letter-spacing: 1.2px;
+}
+.hero-stage-heading > span:first-child {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.hero-visual .status-dot {
+  background: var(--brand-mint);
+  box-shadow: 0 0 12px #2ce7bc55;
+}
+.hero-visual .hero-artwork {
+  inset: 45px 0 33px;
+}
+.hero-visual .emblem-still {
+  width: 94%;
+  height: 94%;
+  filter: none;
+  opacity: 1;
+  transition: opacity 450ms ease;
+}
+.hero-visual .emblem-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  mask-image: radial-gradient(
+    ellipse 68% 70% at 50% 48%,
+    #000 40%,
+    transparent 91%
+  );
+}
+.hero-visual[data-video-ready="true"] .emblem-video {
+  opacity: 1;
+}
+.hero-visual[data-video-ready="true"] .emblem-still {
+  opacity: 0;
+}
+.hero-visual .hero-orbit {
+  border-color: #69f8d915;
+  left: 12%;
+  top: 15%;
+  width: 76%;
+  height: 72%;
+}
+.hero-visual .orbit-two {
+  border-color: #b7aaff1c;
+}
+.hero-visual .visual-caption {
+  bottom: 25px;
+  left: 24px;
+  font-size: 10px;
+  color: var(--stage-muted);
+  letter-spacing: 1.3px;
+  z-index: 3;
+}
+.hero-visual .caption-line {
+  width: 32px;
+  background: #a8d9d32e;
+}
+.hero-visual .animation-toggle,
+.dark .hero-visual .animation-toggle {
+  display: inline-flex;
+  position: absolute;
+  z-index: 4;
+  width: 44px;
+  height: 44px;
+  right: 20px;
+  bottom: 16px;
+  opacity: 1;
+  color: var(--stage-ink);
+  border: 1px solid #b5eee544;
+  background: #10252de6;
+  border-radius: 50%;
+}
+.hero-visual .animation-toggle:hover {
+  background: #184339;
+  border-color: #2ce7bc99;
+}
+.hero-visual .animation-toggle:focus-visible {
+  outline-color: #2ce7bc;
+}
+
+.spatial-card {
+  --tilt-x: 0deg;
+  --tilt-y: 0deg;
+  position: relative;
+  min-width: 0;
+  transform: perspective(1000px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+  transform-style: preserve-3d;
+  transition:
+    transform 400ms cubic-bezier(0.2, 0.65, 0.3, 1),
+    box-shadow 250ms ease;
+}
+.spatial-card[data-tilting="true"] {
+  transition-duration: 90ms;
+}
+.spatial-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    350px circle at var(--light-x, 50%) var(--light-y, 50%),
+    #2ce7bc10,
+    transparent 65%
+  );
+  transition: opacity 250ms ease;
+}
+.spatial-card[data-tilting="true"]::after {
+  opacity: 1;
+}
+
+.orbital-scene {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  min-width: 0;
+  min-height: 300px;
+  aspect-ratio: 1.2;
+  overflow: hidden;
+  border-radius: 24px;
+  touch-action: pan-y;
+  background: radial-gradient(ellipse at 50% 46%, #2ce7bc11, transparent 66%);
+}
+.orbital-fallback,
+.orbital-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.orbital-fallback {
+  opacity: 1;
+  transition: opacity 350ms ease;
+}
+.orbital-canvas {
+  opacity: 0;
+  transition: opacity 350ms ease;
+}
+.orbital-scene[data-scene-state="ready"] .orbital-fallback {
+  opacity: 0;
+}
+.orbital-scene[data-scene-state="ready"] .orbital-canvas {
+  opacity: 1;
+}
+.orbital-ground {
+  position: absolute;
+  left: 20%;
+  right: 20%;
+  bottom: 13%;
+  height: 9%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, #2ce7bc30, transparent 67%);
+  filter: blur(12px);
+}
+.orbital-hint {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  bottom: 14px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  color: var(--muted-foreground);
+  font-family: var(--font-geist-mono);
+  font-size: 10px;
+  letter-spacing: 1.1px;
+  pointer-events: none;
+}
+.orbital-hint-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--brand-accent);
+}
+@media (max-width: 1100px) {
+  .hero-visual {
+    margin-left: 12px;
+  }
+  .hero-stage-heading {
+    inset: 20px 20px auto;
+    letter-spacing: 0.7px;
+  }
+  .hero-stage-heading > span:last-child {
+    display: none;
+  }
+}
+@media (max-width: 767px) {
+  .hero-visual {
+    width: 100%;
+    max-width: 520px;
+    aspect-ratio: 1.12;
+    margin: 28px 0 4px;
+    border-radius: 26px;
+  }
+  .hero-visual .hero-artwork {
+    inset: 30px 0 32px;
+  }
+  .hero-visual .visual-caption {
+    left: 20px;
+    bottom: 27px;
+    letter-spacing: 0.7px;
+  }
+  .hero-visual .animation-toggle {
+    right: 15px;
+    bottom: 15px;
+  }
+  .orbital-scene {
+    min-height: 260px;
+    max-height: 380px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .spatial-card,
+  .spatial-card[data-tilting="true"] {
+    transform: none !important;
+  }
+  .spatial-card::after,
+  .hero-visual .emblem-video,
+  .hero-visual .animation-toggle,
+  .dark .hero-visual .animation-toggle,
+  .orbital-canvas {
+    display: none;
+  }
+  .hero-visual .emblem-still,
+  .hero-visual[data-video-ready="true"] .emblem-still,
+  .orbital-scene[data-scene-state="ready"] .orbital-fallback {
+    opacity: 1;
+  }
+}
+
+/* Theme-matched films blend into the page instead of sitting in a dark tile. */
+.hero-section-v2 .hero-visual {
+  aspect-ratio: 1;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: radial-gradient(ellipse at 50% 55%, #2ce7bc12, transparent 65%);
+  box-shadow: none;
+  --stage-ink: var(--foreground);
+  --stage-muted: var(--muted-foreground);
+}
+.hero-section-v2 .hero-visual::before {
+  display: none;
+}
+.hero-section-v2 .hero-artwork {
+  inset: 20px -35px 35px;
+}
+.hero-section-v2 .emblem-still {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 28px 22px #153d4325);
+}
+.hero-section-v2 .emblem-video {
+  object-fit: cover;
+  mask-image: radial-gradient(
+    ellipse 62% 65% at 50% 50%,
+    #000 35%,
+    transparent 86%
+  );
+}
+.hero-section-v2 .hero-stage-heading {
+  inset: 2px 14px auto;
+  color: var(--muted-foreground);
+}
+.hero-section-v2 .visual-caption {
+  bottom: 12px;
+  color: var(--muted-foreground);
+}
+.hero-section-v2 .animation-toggle {
+  bottom: 0;
+  background: var(--card);
+  border-color: var(--border);
+  color: var(--foreground);
+  box-shadow: var(--panel-shadow);
+}
+.hero-section-v2 .animation-toggle:hover {
+  background: var(--muted);
+  border-color: var(--brand-accent);
+}
+.hero-section-v2 .hero-orbit {
+  border-color: color-mix(in srgb, var(--brand-accent) 12%, transparent);
+}
+.hero-section-v2 .orbit-two {
+  border-color: #a99bff30;
+}
+.hero-section-v2 .hero-visual .status-dot {
+  background: var(--brand-accent);
+}
+.orbital-fallback-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 20px 20px #09131f30);
+}
+@media (max-width: 767px) {
+  .hero-section-v2 .hero-visual {
+    aspect-ratio: 1.1;
+  }
+  .hero-section-v2 .hero-artwork {
+    inset: 20px -18px 30px;
+  }
+  .hero-section-v2 .hero-stage-heading {
+    inset: 0 0 auto;
+    font-size: 9px;
+  }
+  .hero-section-v2 .visual-caption {
+    left: 0;
+    font-size: 9px;
+  }
+}

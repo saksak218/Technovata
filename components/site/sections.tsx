@@ -15,6 +15,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { ServiceVisual } from "@/components/site/service-visual";
+import { SpatialCard } from "@/components/site/spatial-card";
 import { faqs, processSteps, services } from "@/lib/site-content";
 
 export function ServicesSection() {
@@ -30,38 +31,39 @@ export function ServicesSection() {
             <span />
             WHAT WE DO
           </span>
-          <span className="section-index">01 / CAPABILITIES</span>
+          <span className="section-index">01 — FOUR WAYS FORWARD</span>
         </div>
         <div className="section-heading-row">
           <div>
             <h2 id="services-heading">
-              Good ideas deserve
+              From your first impression.
               <br />
-              great execution.
+              <span className="text-accent">To your next big thing.</span>
             </h2>
-            <p>From your first impression to your next big product.</p>
+            <p>Four capabilities. One considered digital experience.</p>
           </div>
           <Link className="text-link" href="/services">
-            Explore our services <ArrowUpRight aria-hidden="true" />
+            Explore all services <ArrowUpRight aria-hidden="true" />
           </Link>
         </div>
         <div className="services-grid">
           {services.map((service, index) => (
-            <Link
-              key={service.id}
-              className="service-card"
-              href={`/services#${service.id}`}
-            >
-              <ServiceVisual kind={service.id} />
-              <div className="service-card-content">
-                <span className="service-number">0{index + 1}</span>
-                <h3>{service.name}</h3>
-                <p>{service.shortDescription}</p>
-                <span className="service-card-arrow">
+            <SpatialCard className="service-tilt" key={service.id}>
+              <Link className="service-card" href={`/services/${service.id}`}>
+                <div className="service-card-top">
+                  <span className="service-number">0{index + 1}</span>
                   <ArrowUpRight aria-hidden="true" />
-                </span>
-              </div>
-            </Link>
+                </div>
+                <ServiceVisual kind={service.id} />
+                <div className="service-card-content">
+                  <h3>{service.name}</h3>
+                  <p>{service.shortDescription}</p>
+                  <span className="service-explore">
+                    Explore service <ArrowRight aria-hidden="true" />
+                  </span>
+                </div>
+              </Link>
+            </SpatialCard>
           ))}
         </div>
       </div>
@@ -70,7 +72,6 @@ export function ServicesSection() {
 }
 
 const processIcons = [Search, Layers3, Code2, Rocket];
-
 export function ProcessSection() {
   return (
     <section
@@ -84,7 +85,7 @@ export function ProcessSection() {
             <span />
             HOW WE WORK
           </span>
-          <span className="section-index">02 / THE PROCESS</span>
+          <span className="section-index">02 — FROM IDEA TO IMPACT</span>
         </div>
         <div className="section-heading-row">
           <div>
@@ -94,28 +95,39 @@ export function ProcessSection() {
               <span className="text-accent">To something real.</span>
             </h2>
           </div>
-          <p className="section-side-copy">
-            No black boxes. No unnecessary complexity.
-            <br /> Just a clear path from idea to launch.
-          </p>
+          <div className="process-intro">
+            <p className="section-side-copy">
+              A clear path. A shared direction.
+              <br />
+              And care in every step along the way.
+            </p>
+            <Link className="text-link" href="/process">
+              Our process in detail <ArrowUpRight aria-hidden="true" />
+            </Link>
+          </div>
         </div>
         <div className="process-grid">
           {processSteps.map((step, index) => {
             const Icon = processIcons[index];
             return (
-              <div className="process-step" key={step.number}>
-                <div className="process-step-top">
-                  <span className="process-icon">
-                    <Icon strokeWidth={1.5} aria-hidden="true" />
-                  </span>
-                  <span className="step-number">/{step.number}</span>
-                  {index < 3 && (
-                    <ArrowRight className="process-arrow" aria-hidden="true" />
-                  )}
+              <SpatialCard className="process-tilt" key={step.number}>
+                <div className="process-step">
+                  <div className="process-step-top">
+                    <span className="process-icon">
+                      <Icon strokeWidth={1.5} aria-hidden="true" />
+                    </span>
+                    <span className="step-number">/{step.number}</span>
+                    {index < 3 && (
+                      <ArrowRight
+                        className="process-arrow"
+                        aria-hidden="true"
+                      />
+                    )}
+                  </div>
+                  <h3>{step.name}</h3>
+                  <p>{step.description}</p>
                 </div>
-                <h3>{step.name}</h3>
-                <p>{step.description}</p>
-              </div>
+              </SpatialCard>
             );
           })}
         </div>
@@ -135,11 +147,11 @@ export function FaqSection() {
           <h2 id="faq-heading">
             Good questions.
             <br />
-            Straight answers.
+            <span className="text-accent">Straight answers.</span>
           </h2>
-          <p>Something else on your mind?</p>
+          <p>Before we build something, let&apos;s clear a few things up.</p>
           <Link href="/contact" className="text-link">
-            Let&apos;s talk it through <ArrowUpRight aria-hidden="true" />
+            Ask us something else <ArrowUpRight aria-hidden="true" />
           </Link>
         </div>
         <Accordion className="faq-accordion">
@@ -164,24 +176,32 @@ export function ProjectCta() {
         <div>
           <span className="eyebrow">
             <span />
-            YOUR NEXT CHAPTER
+            LET&apos;S MAKE WHAT&apos;S NEXT
           </span>
           <h2 id="project-cta-heading">
-            Have something
+            Your next big idea.
             <br />
-            in mind<span className="text-accent">?</span>
+            <span className="text-accent">Starts with hello.</span>
           </h2>
-          <p>Let&apos;s turn “what if” into what&apos;s next.</p>
+          <p>
+            A website. An app. A whole new platform.
+            <br />
+            Tell us what you&apos;re thinking.
+          </p>
         </div>
-        <Button
-          size="lg"
-          nativeButton={false}
-          role="link"
-          render={<Link href="/contact" />}
-        >
-          Start a project <ArrowUpRight aria-hidden="true" />
-        </Button>
+        <div className="cta-action">
+          <Button
+            size="lg"
+            nativeButton={false}
+            role="link"
+            render={<Link href="/contact" />}
+          >
+            Start a project <ArrowUpRight aria-hidden="true" />
+          </Button>
+          <span>No perfect brief required.</span>
+        </div>
         <div className="cta-orbit" aria-hidden="true" />
+        <div className="cta-orbit cta-orbit-second" aria-hidden="true" />
       </div>
     </section>
   );

@@ -1,48 +1,51 @@
 # Technovata UI preview validation
 
-Review date: 7 November 2026. This report covers the local website prototype, not a public deployment.
+Review date: 7 November 2026. This report covers the local prototype and its November design revision, not a public deployment.
 
 ## Implemented
 
-- Home, Services, About, Contact, and a branded 404 page.
-- The supplied inspiration and design-system direction: midnight navy, electric mint, restrained violet highlights, dimensional service previews, and the orbital emblem.
-- Light and dark themes, responsive navigation, FAQs, and shared project inquiry links.
-- Supplied emblem artwork and a locally served, muted 960 × 540 MP4, reduced to 710,207 bytes. Original design files remain unchanged; public PNG copies match their sources byte for byte.
-- Static hero artwork in light mode, under reduced motion, and initially on phone-sized layouts. Dark desktop animation has pause/resume controls and pauses offscreen or in a hidden tab.
-- A demo inquiry with required name, email, service, and message fields. It validates locally, preserves typed content, announces that nothing was sent, and resets only on request. The form is disabled without JavaScript.
-- Sample company content and `noindex` metadata. No real inquiry delivery, data storage, accounts, CMS, or external business integrations.
+- Nine public pages: Home, Services, four dedicated service pages, Process, About, and Contact, plus the branded 404. All pages prerender statically. Unknown service URLs return an HTTP 404.
+- Floating glass navigation with an accessible Services dropdown, active page states, mobile sheet, theme switch, and expanded footer.
+- Concrete service descriptions and deliverables for websites, custom web applications, mobile applications, and SaaS development. A shared service list supplies cards, navigation, and inquiry choices.
+- Revised light/dark surfaces, dimensional service previews, pointer-responsive cards, a fuller landing page, collaboration guidance, six FAQs, and three explicitly fictional testimonial samples.
+- Theme-matched hero films: original dark video and the new white-background video, optimized to audio-free 960×540 H.264 MP4s. The light copy is 708,557 bytes; the dark copy is 710,207 bytes. Original design files are unchanged.
+- Real WebGL geometry: an extruded T, beveled glass plate, broad metallic orbital ribbons, circuit traces, and nodes. The renderer loads on view, uses demand rendering and finite entry motion, and simplifies geometry/pixel density on phones.
+- Supplied 3D emblem artwork as the loading, reduced-motion, and graphics-failure fallback. Reduced motion avoids video and canvas loading; phones start with static hero artwork and offer playback opt-in.
+- Transparent logo variants derived from the supplied Technovata logo, plus ICO, PNG favicons, and an Apple touch icon. Assets and exact generation prompts are in [brand-assets.md](brand-assets.md).
+- Demo inquiry validation, first-error focus, ordinary typing preservation, explicit reset, and **“Demo complete. Nothing was sent.”** No transmission or storage of inquiry values; no-JavaScript fields stay disabled.
 
-## Checks and results
+## Verification
 
 | Check | Result |
 | --- | --- |
 | ESLint | Passed |
 | TypeScript | Passed |
-| Production build | Passed; all four pages and the 404 prerender statically |
-| Chromium behavior tests | 10 passed |
-| Firefox behavior tests | 10 passed |
-| WebKit behavior tests | 10 passed |
-| Final targeted layout and inquiry checks after visual refinements | Six passed across the three engines |
-| Responsive page/theme combinations | All four pages checked at 375, 768, 1024, and 1440 CSS pixels in both themes; no horizontal page overflow |
-| Visual review | 32 full-page captures, with manual review of representative phone, tablet, and desktop layouts |
-| 200% reflow simulation | All four pages fit in both themes at 720 CSS pixels and 2× density, representing a 1440-pixel display at 200% |
-| Keyboard behavior | Mobile menu Escape, focus return, route changes, FAQ activation, and first-invalid-field focus passed |
-| Demo data handling | No inquiry network requests or values in URL, local storage, or session storage; ordinary spaces, punctuation, and newlines preserved |
-| Media behavior | Reduced motion, static phone/light-mode views, and failed-playback fallback passed; desktop play, pause/resume, and offscreen pause also exercised |
-| Accessibility scan | Home and Contact reported zero WCAG A/AA violations after fixes; complex-background contrast checks on Home still require manual interpretation |
-| Form border contrast | 3.16:1 against the light card surface and 4.15:1 against the dark card surface |
-| Local layout stability | CLS 0 in the unthrottled, warm-cache desktop capture runs; this is a local diagnostic, not field performance evidence |
+| Production build | Passed; nine public pages and branded 404 prerender statically |
+| Final cross-browser behavior suite | 43 passed, two intentional GPU-case skips: 14 shared scenarios in each of Chromium, Firefox, and WebKit, plus the Chromium software WebGL lifecycle regression |
+| Full responsive review | 108 combinations: nine pages in both themes at 320, 375, 768, 1024, and 1440px, plus a 720px reflow layout; no horizontal page overflow or browser runtime errors |
+| Visual captures | 36 full-page captures at 375 and 1440px; representative landing, service, About, Process, Contact, menu, and 3D views manually inspected |
+| Accessibility | Home and Contact in both themes: zero automated WCAG A/AA violations. Home gradient backgrounds still require manual contrast interpretation; checked against brand surfaces |
+| Navigation | Desktop Services keyboard opening, Escape/focus restoration, mobile sheet, route changes, history, theme persistence, and 44px header controls verified |
+| Inquiry safety | Local validation, ordinary spaces/punctuation/newlines, no inquiry requests or values in URLs/storage, demo confirmation/reset, no-JavaScript prevention verified |
+| Media | Correct film in each theme, phone opt-in, pause/resume, offscreen pause/resume, reduced-motion no-download, and failed-playback artwork verified |
+| Real 3D | Actual Chromium software WebGL canvas and visible sculptural geometry verified in both themes; pointer response, finite rendering, and card perspective exercised |
+| Graphics lifecycle | Live reduced-motion changes remove the canvas and reset tilt; re-enabling restores 3D. Forced context loss returns to artwork in both themes with no page errors |
 | Next.js development diagnostics | No compilation issues, configuration errors, or browser-session errors at final review |
-| Whitespace check | `git diff --check` passed |
+| Whitespace | `git diff --check` passed |
 
-The behavior suite covers navigation and browser history, theme persistence, valid and invalid inquiries, no-JavaScript submission prevention, reduced motion, media failure, FAQs, and missing pages. Playwright runs against a separate local production build on port 3100, leaving the development server on port 3000 intact.
+The shared Playwright scenarios cover Chromium, Firefox, and WebKit. A focused additional regression uses Chromium's software WebGL renderer; that GPU-specific case is intentionally skipped under the Firefox/WebKit projects. Reduced-motion and unavailable-WebGL fallback behavior remains tested across all three engines.
 
-The host initially lacked WebKit's AVIF libraries. Copies of `libavif16`, `libgav1-1`, and `libyuv0` were extracted into the downloaded WebKit browser cache for verification. No system packages were installed. Other Linux machines may need Playwright's documented browser dependencies.
+The layout matrix lets static-page prefetches settle before the next full document navigation. Immediate repeated document replacements caused WebKit to report canceled RSC prefetches as access-control errors; the settled navigation matrix passes without suppressing browser errors. Dropdown tests target the portalled popup rather than assuming it is a DOM descendant of the navigation root.
 
-## Limits and deferred work
+Playwright starts/stops an isolated production server on port 3100, with build output in `.next-production`. The existing development server on port 3000 was preserved. Use `http://localhost:3000` for development; this server's development-origin policy blocks HMR at the alternate `127.0.0.1` origin.
 
-- The hero uses rendered 3D artwork and video. Service previews and process illustrations use CSS depth. React Three Fiber, procedural geometry, and WebGL interactions are explicitly deferred in `PLAN.md`.
-- Browser widths, reflow, and engine checks are emulated. Physical Android/iOS devices, actual browser zoom controls, constrained mobile networks, and device battery/thermal behavior were not tested.
-- Company facts, domain, inbox, hosting, production legal copy, live inquiry delivery, and public SEO remain future launch work.
-- Dependency installation reported 13 audit findings: two low and 11 moderate. No forced dependency upgrades were applied as part of the UI work.
+This Linux host's downloaded WebKit browser cache contains the AVIF-related libraries prepared during the earlier preview verification; no new system package installation was needed. Other machines may need Playwright's browser dependencies.
+
+## Limits
+
+- Browser engines, widths, reflow, and software WebGL are local emulation. Physical iOS/Android devices, battery/thermal behavior, real GPU performance, actual browser zoom controls, constrained networks, and production field metrics were not tested.
+- This is a local, `noindex` prototype. Domain, inbox, hosting, verified company details, legal content, real inquiries, and production SEO remain launch work.
+- Testimonial people and quotes are fictional samples. Replace them with approved genuine feedback before publication.
+- The new service copy describes proposed capabilities, not evidence of completed client projects. SaaS is a service offering; the website itself has no SaaS workspace, auth, subscriptions, or billing.
+- Installation reported 13 dependency audit findings: two low and 11 moderate. No forced dependency upgrades were applied.
 - No commit, push, or deployment was performed.
